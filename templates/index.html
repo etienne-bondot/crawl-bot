@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Web Crawler Results</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/styles.css') }}"
+    />
+  </head>
+  <body>
+    <h1>Web Crawler Results</h1>
+    <div class="container">
+      <div class="results-table">
+        <table>
+          <thead>
+            <tr>
+              {% for header in ["URL", "Loading Time (s)", "H1 Headings", "H2
+              Headings", "Meta description", "Meta keywords"] %}
+              <th>{{ header }}</th>
+              {% endfor %}
+            </tr>
+          </thead>
+          <tbody>
+            {{ table | safe }}
+          </tbody>
+        </table>
+      </div>
+      <div class="results-chart">
+        <img src="{{ chart_file }}" alt="Loading Time Chart" />
+      </div>
+    </div>
+  </body>
+</html>
