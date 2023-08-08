@@ -27,37 +27,65 @@ h1 {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   display: flex;
   gap: 2rem;
-  height: calc(100vh - 147px);
+  height: calc(100vh - 200px);
   justify-content: space-between;
   max-width: 1920px;
   padding: 20px;
+  position: relative;
 }
 
-.results-table {
-  flex-basis: 48%;
+#start-crawling-btn {
+  cursor: pointer;
+}
+
+#form {
+  align-items: center;
+  border-bottom: 1px solid #dcdcdc;
+  column-gap: 10px;
+  display: flex;
+  margin: 0 auto;
+  max-width: 1920px;
+  padding: 20px 40px 20px 0;
+}
+
+#item-count {
+  left: 20px;
+  position: absolute;
+  top: 20px;
+}
+
+#results-table {
   height: 100%;
   overflow: scroll;
+  position: relative;
 }
 
-.results-table table {
+#results-table table {
   border-collapse: collapse;
+  margin-top: 35px;
   table-layout: fixed;
   width: 100%;
 }
 
-.results-table thead {
+#results-table thead {
   background-color: #f9f9f9;
   position: sticky;
   top: 0;
 }
 
-.results-table th,
-.results-table td {
+#results-table th,
+#results-table td {
   border-bottom: 1px solid #ddd;
+  font-size: 12px;
   padding: 8px 12px;
   text-align: left;
 }
 
-.results-chart {
-  flex-basis: 48%;
+#results-chart {
+  min-width: 550px;
+  width: 40%;
+}
+
+#results-chart img {
+  width: 100%;
 }

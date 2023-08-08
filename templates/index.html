@@ -6,28 +6,92 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='css/styles.css') }}"
     />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   </head>
   <body>
     <h1>Web Crawler Results</h1>
+
+    <form id="form">
+      <input
+        type="text"
+        id="url-input"
+        name="url"
+        placeholder="Enter a website url"
+      />
+      <button id="start-crawling-btn">Start Crawling</button>
+      <div id="progress">Progress: Waiting</div>
+    </form>
+
     <div class="container">
-      <div class="results-table">
-        <table>
-          <thead>
-            <tr>
-              {% for header in ["URL", "Loading Time (s)", "H1 Headings", "H2
-              Headings", "Meta description", "Meta keywords"] %}
-              <th>{{ header }}</th>
-              {% endfor %}
-            </tr>
-          </thead>
-          <tbody>
-            {{ table | safe }}
-          </tbody>
-        </table>
-      </div>
-      <div class="results-chart">
-        <img src="{{ chart_file }}" alt="Loading Time Chart" />
-      </div>
+      <div id="item-count"></div>
+      <div id="results-table"></div>
+      <div id="results-chart"></div>
     </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("form");
+        const urlInput = document.getElementById("url-input");
+        const progressElmt = document.getElementById("progress");
+        const tableElmt = document.getElementById("results-table");
+        const itemCountElmt = document.getElementById("item-count");
+        const loadingTimesChartElmt = document.getElementById("results-chart");
+
+        form.addEventListener("submit", function (event) {
+          event.preventDefault();
+          const url = urlInput.value;
+          handleChange(url);
+        });
+
+        async function handleChange(url) {
+          try {
+            const response = await fetch("/start_crawling", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                url,
+              }),
+            });
+
+            const data = await response.json();
+
+            progressElmt.innerHTML = "Progress: Crawling in progress...";
+            checkProgress(data.task_id);
+          } catch (error) {
+            progressElmt.innerHTML = `Error: ${error.message}`;
+          }
+        }
+
+        async function checkProgress(taskId) {
+          try {
+            const response = await fetch(`/check_progress/${taskId}`);
+
+            const data = await response.json();
+
+            if (data.state === "SUCCESS") {
+              progressElmt.innerHTML = "Progress: Crawling complete";
+              itemCountElmt.innerHTML = `${data.result.total} links - Average loading time: ${data.result.average_loading_time}s`;
+              tableElmt.innerHTML = data.result.table;
+              loadingTimesChartElmt.innerHTML = `<img src="${
+                data.result.chart_file
+              }?timestamp=${Date.now()}}" alt="Loading time chart" />`;
+            } else if (data.state === "PENDING" || data.state === "STARTED") {
+              progressElmt.innerHTML = "Progress: Crawling in progress...";
+              setTimeout(function () {
+                checkProgress(taskId);
+              }, 1000);
+            } else {
+              progressElmt.innerHTML = "Progress: Error";
+            }
+          } catch (error) {
+            progressElmt.innerHTML = `Error: ${error.message}`;
+          }
+        }
+      });
+
+      $(document).ready(function () {});
+    </script>
   </body>
 </html>
