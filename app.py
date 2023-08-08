@@ -31,8 +31,6 @@ tabulate.PRESERVE_WHITESPACE = True
 
 matplotlib.use('agg')
 
-print(os.getenv('REDIS_SERVER'))
-
 # app is the Flask application object that you will use to run the web server.
 # celery is the Celery object that you will use to run the Celery worker.
 # Note that the CELERY_BROKER_URL configuration here is set to the Redis server that you're running locally
