@@ -6,6 +6,7 @@
 $ python3 -m venv venv
 $ . venv/bin/activate
 $ pip install --upgrade pip
+$ pip install -r requirements.txt
 ```
 
 ## Running Redis locally
@@ -88,13 +89,13 @@ you should set broker_connection_retry_on_startup to True.
 In a new terminal run
 
 ```bash
-$ python3.10 app.py --url=<url>
+$ python3.10 app.py
 ```
 
 The server should be up and running
 
 ```bash
- ✘ mwm-etiennebondot@myhost  ~/Workspace/crawl-bot   main ±  python3.10 app.py --url=https://app.colorpop.ai
+ ✘ mwm-etiennebondot@myhost  ~/Workspace/crawl-bot   main ±  python3.10 app.py
  * Serving Flask app 'app'
  * Debug mode: on
 WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
@@ -110,3 +111,14 @@ Press CTRL+C to quit
 127.0.0.1 - - [08/Aug/2023 11:44:59] "GET /check_progress/b1280952-c534-4d66-8f61-393b81f8f2f3 HTTP/1.1" 200 -
 127.0.0.1 - - [08/Aug/2023 11:45:00] "GET /check_progress/b1280952-c534-4d66-8f61-393b81f8f2f3 HTTP/1.1" 200 -
 ```
+
+## Docker
+
+![Flow](image.png)
+
+```bash
+$ docker-compose build
+$ docker-compose up -d
+```
+
+Then go to http://localhost:8000.

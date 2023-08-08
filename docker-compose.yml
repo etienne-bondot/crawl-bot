@@ -1,0 +1,37 @@
+version: "3.8"
+
+services:
+  # The Redis service, which will be used as the Celery message broker and result backend
+  redis:
+    image: redis:7-alpine
+
+  # The flask dev server
+  web:
+    build:
+      context: .
+      dockerfile: ./compose/Dockerfile
+    image: crawler_web_application
+    # '/start' is the shell script used to run the service
+    command: /start
+    # this volume is used to map the files and folders on the host to the container
+    # so if we change code on the host, code in the docker container will also be changed
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+
+  # The Celery worker process
+  celery_worker:
+    build:
+      context: .
+      dockerfile: ./compose/Dockerfile
+    image: crawler_celery_worker
+    command: /start-celeryworker
+    volumes:
+      - .:/app
+    environment:
+      - FLASK_APP=crawler
+    depends_on:
+      - redis

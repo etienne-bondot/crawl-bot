@@ -1,12 +1,13 @@
 import argparse
+import os
 from urllib.parse import urljoin, urlparse
-import json
 
 import matplotlib
 import matplotlib.pyplot as plt
 import requests
 from bs4 import BeautifulSoup
 from celery import Celery
+from dotenv import load_dotenv
 from flask import Flask, jsonify, render_template, request
 from tabulate import tabulate
 
@@ -14,6 +15,8 @@ from graph import generateGraph
 from meta import extractMeta
 from pagespeed import calculatePageSpeed
 from tags import extractTags
+
+load_dotenv()
 
 headers = ["URL", "Loading time (s)", "H1 headings",
            "H2 headings", "Description", "Keywords"]
@@ -35,7 +38,7 @@ matplotlib.use('agg')
 # The celery object takes the application name as an argument and sets the broker argument to the one you specified in the configuration.
 # To add the Flask configuration to the Celery configuration, you update it with the conf.update method.
 app = Flask(__name__, static_folder='static')
-app.config["CELERY_BROKER_URL"] = "redis://localhost:6379"
+app.config["CELERY_BROKER_URL"] = os.getenv('REDIS_SERVER')
 celery = Celery(
     app.name,
     backend='rpc://',
@@ -169,4 +172,4 @@ def check_progress(task_id):
 
 
 if __name__ == '__main__':
-    app.run(port=8000, debug=True)
+    app.run(host="0.0.0.0", port=8000, debug=True)

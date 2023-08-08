@@ -1,0 +1,8 @@
+requests
+flask
+bs4
+tabulate
+matplotlib
+celery
+redis
+python-dotenv
