@@ -2,8 +2,10 @@ def extractMeta(soup):
     metatags = soup.find_all('meta')
     metadata = {
         'description': '',
-        'keywords': ''
+        'keywords': '',
     }
+
+    print(metatags)
 
     for tag in metatags:
         if tag.get('name') == 'description':

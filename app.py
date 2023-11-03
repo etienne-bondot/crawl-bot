@@ -18,8 +18,8 @@ from tags import extractTags
 
 load_dotenv()
 
-headers = ["URL", "Loading time (s)", "H1 headings",
-           "H2 headings", "Description", "Keywords"]
+headers = ["URL", "Loading time (s)", "Title", "Description",
+           "Keywords", "H1 headings", "H2 headings",]
 
 # Start the web crawler from a given URL
 parser = argparse.ArgumentParser()
@@ -70,28 +70,32 @@ def web_crawler(url, depth=10):
             continue
 
         try:
-            response = requests.get(url)
+            response = requests.get(current_url)
             response.raise_for_status()
 
             visited_urls.add(current_url)
 
             soup = BeautifulSoup(response.text, 'html.parser')
 
-            # Extract main tags h1 / h2
-            tags = extractTags(soup)
+            # Extract title
+            title = soup.title.text
 
             # Extract meta tags
             metadata = extractMeta(soup)
 
+            # Extract main tags h1 / h2
+            tags = extractTags(soup)
+
             # Calculate page speed
-            loading_time = calculatePageSpeed(url)
+            loading_time = calculatePageSpeed(current_url)
 
             results.append([
                 current_url,
                 loading_time,
+                title,
+                metadata,
                 tags['h1_headings'],
                 tags['h2_headings'],
-                metadata
             ])
 
             links = soup.find_all('a')
@@ -125,11 +129,12 @@ def crawl(self, url):
     for result in crawler_results:
         table.append([
             f"{result[0]}",
-            f"{result[1]:.2f}",
-            "\n".join(result[2]),
-            "\n".join(result[3]),
-            result[4]['description'],
-            "\n".join(result[4]['keywords'])
+            f"{result[1]:.4f}",
+            result[2],
+            result[3]['description'],
+            ", ".join(result[3]['keywords']),
+            "\n".join(result[4]),
+            "\n".join(result[5]),
         ])
         urls.append(result[0])
         loading_times.append(result[1])
